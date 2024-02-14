@@ -11,7 +11,8 @@ async function getUsers(req, res) {
 
         res.json(users);
     } catch (error) {
-        console.error('Error retrieving users: ', error);
+        res.status(500).json({message: 'Internal Server Error!'});
+        // console.error('Error retrieving users: ', error);
     }
 }
 
@@ -20,7 +21,7 @@ async function addUser(req, res) {
         const validate = v.validate(req.body, userSchema);
 
         if (validate.length) {
-            return res.status(400).json(validate);
+            return res.status(400).json({data: validate});
         }
 
         const { username, email, password, role } = req.body;
@@ -34,10 +35,8 @@ async function addUser(req, res) {
 
         res.json({ message: 'Data user was Inserted' });
     } catch (error) {
-        if (error instanceof ValidationError) {
-            res.status(400).json({ message: error.errors[0].message });
-        }
-        console.error('Error store user: ', error);
+        res.status(500).json({message: 'Internal Server Error!'});
+        // console.error('Error store user: ', error);
     }
 }
 
@@ -48,7 +47,8 @@ async function getUserById(req, res) {
 
         res.json(user ?? {});
     } catch (error) {
-        console.error('Error show detail user: ', error);
+        res.status(500).json({message: 'Internal Server Error!'});
+        // console.error('Error show detail user: ', error);
     }
 }
 
@@ -59,7 +59,7 @@ async function updateUserById(req, res) {
         const validate = v.validate(req.body, userSchema);
 
         if (validate.length) {
-            return res.status(400).json(validate);
+            return res.status(400).json({message: validate});
         }
 
         const { username, email, role } = req.body;
@@ -77,10 +77,8 @@ async function updateUserById(req, res) {
 
         res.json(updatedUser ?? {});
     } catch (error) {
-        if (error instanceof ValidationError) {
-            res.status(400).json({ message: error.errors[0].message });
-        }
-        console.error('Error update user: ', error);
+        res.status(500).json({message: 'Internal Server Error!'});
+        // console.error('Error update user: ', error);
     }
 }
 
@@ -97,7 +95,8 @@ async function deleteUserById(req, res) {
 
         res.json({ message: 'Data was deleted' });
     } catch (error) {
-        console.error('Error update user: ', error);
+        res.status(500).json({message: 'Internal Server Error!'});
+        // console.error('Error update user: ', error);
     }
 }
 

@@ -3,7 +3,7 @@ let userSchema = {
     email: 'email',
     password: 'string',
     role: {
-        type: "array",
+        type: "string",
         items: 'string',
         enum: ["user", "admin"],
     }

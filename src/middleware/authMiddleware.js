@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 require('dotenv').config();
 
 const authorizationMiddleware = (allowedRoles) => {
@@ -16,7 +17,7 @@ const authorizationMiddleware = (allowedRoles) => {
         if (token.length > 1) {
             token = token[1];
         } else token = token[0];
-            
+
         jwt.verify(token, process.env.API_SECRET, (err, decoded) => {
             if (err) {
                 return res.status(401).json({
@@ -25,13 +26,13 @@ const authorizationMiddleware = (allowedRoles) => {
             }
 
             req.user = decoded;
-            const userRole = req.user ? req.user.role : 'guest';
-
-            if (allowedRoles.includes(userRole)) {
-                next();
-            } else {
-                res.status(401).json({ message: 'forbidden' });
-            }
+            User.findByPk(decoded.sub).then((signedUser) => {
+                if (allowedRoles.includes(signedUser.role ?? 'guest')) {
+                    next();
+                } else {
+                    res.status(403).json({ message: 'forbidden' });
+                }
+            });
         });
     }
 }
